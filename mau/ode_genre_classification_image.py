@@ -1,21 +1,3 @@
-# import gzip
-# import matplotlib.pyplot as plt
-# f = gzip.open('./.data/mnist/MNIST/raw/train-images-idx3-ubyte.gz','r')
-
-# image_size = 28
-# num_images = 6
-
-# import numpy as np
-# f.read(16)
-# buf = f.read(image_size * image_size * num_images)
-# data = np.frombuffer(buf, dtype=np.uint8).astype(np.float32)
-# data = data.reshape(num_images, image_size, image_size, 1)
-
-# img_idx = 0
-# image = np.asarray(data[img_idx]).squeeze()
-# plt.imshow(image)
-# plt.show()
-
 import os
 import argparse
 import logging
@@ -35,11 +17,11 @@ parser.add_argument('--network', type=str, choices=['resnet', 'odenet'], default
 parser.add_argument('--tol', type=float, default=1e-3)
 parser.add_argument('--adjoint', type=eval, default=False, choices=[True, False])
 parser.add_argument('--downsampling-method', type=str, default='conv', choices=['conv', 'res'])
-parser.add_argument('--nepochs', type=int, default=160)
+parser.add_argument('--nepochs', type=int, default=10)
 parser.add_argument('--data_aug', type=eval, default=False, choices=[True, False])
 parser.add_argument('--lr', type=float, default=0.1)
-parser.add_argument('--batch_size', type=int, default=50)
-parser.add_argument('--test_batch_size', type=int, default=25)
+parser.add_argument('--batch_size', type=int, default=5)
+parser.add_argument('--test_batch_size', type=int, default=5)
 
 parser.add_argument('--save', type=str, default='./experiment1')
 parser.add_argument('--debug', action='store_true')
@@ -217,7 +199,7 @@ def get_music_loaders(data_aug=False, batch_size=50, test_batch_size=25):
     transform_test = transforms.Compose([
         transforms.ToTensor(),
     ])
-    dataset = MusicDataset(csv_file = './archive/Data/features_3_sec_images.csv', root_dir = './archive/Data/partitioned',
+    dataset = MusicDataset(csv_file = './archive/Data/features_3_sec_processed.csv', root_dir = './archive/Data/mau_spectrogram_squeezed',
                         transform = transforms.ToTensor())
     train_set, test_set = torch.utils.data.random_split(dataset, [2886, 100])
     train_loader = DataLoader(dataset = train_set, batch_size = batch_size, shuffle=True)
@@ -260,7 +242,7 @@ def accuracy(model, dataset_loader):
     total_correct = 0
     for x, y in dataset_loader:
         x = x.to(device)
-        y = one_hot(np.array(y.numpy()), 10)
+        y = one_hot(np.array(y.numpy()), 3)
 
         target_class = np.argmax(y, axis=1)
         predicted_class = np.argmax(model(x).cpu().detach().numpy(), axis=1)
