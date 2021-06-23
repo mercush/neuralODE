@@ -1,0 +1,4 @@
+100 epochs
+0.03 learning rate
+16 batch size and test batch size
+adjoint true

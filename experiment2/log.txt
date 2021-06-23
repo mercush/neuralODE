@@ -1,0 +1,1 @@
+this was the default batch sizes but the images were compressed to 5% of their original size (squeezed). 10 epochs 

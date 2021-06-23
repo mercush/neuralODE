@@ -1,0 +1,3 @@
+batch size 32
+100 epochs
+squeezed images. 
